@@ -42,7 +42,7 @@ export class Application implements ApplicationInterface {
   }
 
   boot(): void {
-    this.database.init();
+    if (this.database) this.database.init();
 
     const middlewares: Middleware[] = [];
     if (this.session) middlewares.push(this.session.middleware(this.server));
