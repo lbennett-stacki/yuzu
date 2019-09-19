@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Yuzu is a server-side MVC framework written in TypeScript",
   "main": "dist/index.js",
+  "repository": "github:LukeeeeBennett/yuzu",
   "scripts": {
     "prepare": "npm run build",
     "prepublish": "npm run lint",
