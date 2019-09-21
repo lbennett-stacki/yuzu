@@ -8,6 +8,15 @@ import { Application } from './Application';
 export type AuthMiddleware = Middleware;
 export type VerifyFunction = (request, options?: object) => Promise<void>;
 
+export interface AuthenticateOptionsI {
+  session?: boolean;
+  name: string;
+}
+
+export interface AuthenticateMiddlewareOptionsI {
+  session?: boolean;
+}
+
 export class Authenticator {
   private auth: typeof koaPassport;
   private application: Application;
@@ -39,7 +48,7 @@ export class Authenticator {
 
   authenticate(
     name: string,
-    config?: object,
+    config?: AuthenticateOptionsI,
     verify?: VerifyFunction
   ): AuthMiddleware {
     return this.auth.authenticate(name, config, verify);
@@ -55,7 +64,10 @@ export class Authenticator {
     };
   }
 
-  middleware(): Middleware {
-    return koaCompose([this.auth.initialize() /**, koaPassport.session()**/]);
+  middleware(config: AuthenticateMiddlewareOptionsI = {}): Middleware {
+    const middleware = [this.auth.initialize()];
+    if (config.session) middleware.push(koaPassport.session());
+
+    return koaCompose(middleware);
   }
 }

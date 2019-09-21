@@ -8,7 +8,12 @@ import {
 } from './database/Database';
 import { ModelInterface } from './model/Model';
 import { Session, SessionConfigInterface } from './Session';
-import { Authenticator, AuthMiddleware, VerifyFunction } from './Authenticator';
+import {
+  Authenticator,
+  AuthMiddleware,
+  VerifyFunction,
+  AuthenticateOptionsI,
+} from './Authenticator';
 
 export interface ApplicationInterface {
   boot(): void;
@@ -46,7 +51,10 @@ export class Application implements ApplicationInterface {
 
     const middlewares: Middleware[] = [];
     if (this.session) middlewares.push(this.session.middleware(this.server));
-    middlewares.push(this.auth.middleware(), this.router.middleware());
+    middlewares.push(
+      this.auth.middleware({ session: Boolean(this.session) }),
+      this.router.middleware()
+    );
     this.server.init(middlewares);
   }
 
@@ -80,13 +88,14 @@ export class Application implements ApplicationInterface {
 
   authenticate(
     name: string,
-    options?: object,
+    options?: AuthenticateOptionsI,
     verify?: VerifyFunction
   ): AuthMiddleware {
-    return this.auth.authenticate(name, options, verify);
-  }
-
-  isAuthenticated(): AuthMiddleware {
-    return this.auth.isAuthenticated();
+    const newOptions = {
+      ...options,
+      session:
+        options.session === undefined ? Boolean(this.session) : options.session,
+    };
+    return this.auth.authenticate(name, newOptions, verify);
   }
 }

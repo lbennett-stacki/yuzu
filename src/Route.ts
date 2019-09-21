@@ -1,8 +1,9 @@
 import { Controller } from './Controller';
 import { Application } from './Application';
+import { AuthenticateOptionsI } from './Authenticator';
 
 export interface RouteConfigInterface {
-  authenticate?: string;
+  authenticate?: string | AuthenticateOptionsI;
   authenticated?: boolean;
 }
 
@@ -24,7 +25,7 @@ export class Route implements RouteInterface {
   readonly endpoint: string;
   readonly controller: Controller;
   readonly action: string;
-  readonly config?: RouteConfigInterface = {};
+  readonly config: RouteConfigInterface = {};
   readonly controllerAction: Function;
   private application: Application;
 
@@ -34,7 +35,7 @@ export class Route implements RouteInterface {
     endpoint: string,
     controller: Controller,
     action: string,
-    config?: RouteConfigInterface
+    config: RouteConfigInterface = {}
   ) {
     this.application = application;
     this.method = method;
@@ -46,19 +47,25 @@ export class Route implements RouteInterface {
   }
 
   middleware(): RouteBeforeAfterMiddleware {
-    const before = [...this.controller.before];
-    const after = [...this.controller.after];
+    const before = this.controller.before.map(middleware =>
+      middleware.bind(this.controller)
+    );
+    const after = this.controller.after.map(middleware =>
+      middleware.bind(this.controller)
+    );
+    const { authenticate } = this.config;
 
-    if (this.config.authenticate) {
-      before.unshift(
-        this.application.authenticate(this.config.authenticate, {
-          session: false, // TODO: configurable from config/routes
-        })
-      );
-    }
+    if (authenticate) {
+      let name, config;
+      if (typeof authenticate === 'string') {
+        name = authenticate;
+        config = {};
+      } else {
+        name = authenticate.name;
+        config = authenticate;
+      }
 
-    if (this.config.authenticated) {
-      before.unshift(this.application.isAuthenticated());
+      before.unshift(this.application.authenticate(name, config));
     }
 
     return {
