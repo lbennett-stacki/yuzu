@@ -28,7 +28,7 @@ export class Server {
 
   private registerDefaultMiddleware(middlewares: Middleware[]): void {
     this.use(koaBodyParser());
-    this.use(koaCORS());
+    this.use(koaCORS({ credentials: true })); // TODO: config-able
 
     this.use(middlewares);
   }
