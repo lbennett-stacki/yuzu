@@ -9,7 +9,7 @@
     "prepublish": "npm run lint",
     "build:clean": "rm -rf dist/*",
     "build:compile": "tsc --declaration",
-    "build:compile:watch": "tsc --watch",
+    "build:compile:watch": "npm run build:compile --watch",
     "build": "npm run build:clean && npm run build:compile",
     "start": "NODE_ENV=production node dist/index.js",
     "start:dev": "nodemon dist",

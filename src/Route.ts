@@ -1,6 +1,7 @@
 import { Controller } from './Controller';
 import { Application } from './Application';
 import { AuthenticateOptionsI } from './Authenticator';
+import { deprecationMessage } from './Deprecation';
 
 export interface RouteConfigInterface {
   authenticate?: string | AuthenticateOptionsI;
@@ -58,6 +59,9 @@ export class Route implements RouteInterface {
     if (authenticate) {
       let name, config;
       if (typeof authenticate === 'string') {
+        deprecationMessage(
+          '`authenticate` route option of type string is deprecated, please use an object with key `name` instead'
+        );
         name = authenticate;
         config = {};
       } else {
