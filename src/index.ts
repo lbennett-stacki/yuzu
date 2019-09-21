@@ -35,22 +35,12 @@ export {
   MongooseDatabaseAdapter,
 } from './database/adapters/MongooseDatabaseAdapter';
 
-export {
-  MongoritoDatabaseAdapter,
-} from './database/adapters/MongoritoDatabaseAdapter';
-
 export { ModelInterface, ModelFindConfig } from './model/Model';
 
 export { MongooseModelAdapter } from './model/adapters/MongooseModelAdapter';
-
-export { MongoritoModelAdapter } from './model/adapters/MongoritoModelAdapter';
 
 export { RecordInterface } from './model/record/Record';
 
 export {
   MongooseRecordAdapter,
 } from './model/record/adapters/MongooseRecordAdapter';
-
-export {
-  MongoritoRecordAdapter,
-} from './model/record/adapters/MongoritoRecordAdapter';

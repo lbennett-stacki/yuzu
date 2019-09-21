@@ -5,7 +5,10 @@ export interface ModelFindConfig {
 }
 
 export interface ModelInterface {
-  create(data: object): RecordInterface;
-  find(where: object, config?: ModelFindConfig): Promise<RecordInterface[]>;
-  findAll(): Promise<RecordInterface[]>;
+  create<T>(data: object): RecordInterface<T>;
+  find<T>(
+    where: object,
+    config?: ModelFindConfig
+  ): Promise<RecordInterface<T>[]>;
+  findAll<T>(): Promise<RecordInterface<T>[]>;
 }

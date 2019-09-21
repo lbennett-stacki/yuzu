@@ -10,7 +10,10 @@ export class MongooseModelAdapter implements ModelInterface {
     this.model = model;
   }
 
-  find(where: object, config?: ModelFindConfig): Promise<RecordInterface[]> {
+  find<T>(
+    where: object,
+    config?: ModelFindConfig
+  ): Promise<RecordInterface<T>[]> {
     return new Promise((resolve, reject): void => {
       const query = this.model.find(where);
 
@@ -20,7 +23,8 @@ export class MongooseModelAdapter implements ModelInterface {
         if (error) return reject(error);
 
         const records = results.map(
-          (result: Document) => new MongooseRecordAdapter(result)
+          (result: Document): MongooseRecordAdapter<T> =>
+            new MongooseRecordAdapter<T>(result)
         );
 
         return resolve(records);
@@ -28,11 +32,11 @@ export class MongooseModelAdapter implements ModelInterface {
     });
   }
 
-  findAll(): Promise<RecordInterface[]> {
+  findAll<T>(): Promise<RecordInterface<T>[]> {
     return this.find({});
   }
 
-  create(data: object): RecordInterface {
+  create<T>(data: object): RecordInterface<T> {
     return new MongooseRecordAdapter(new this.model(data));
   }
 }
