@@ -1,7 +1,6 @@
 import { Context } from './Server';
 import { Application } from './Application';
 import { ModelInterface } from './model/Model';
-import { VerifyFunction, AuthenticateOptionsI } from './Authenticator';
 
 export interface ControllerInterface {
   before: Function[];
@@ -44,13 +43,5 @@ export class Controller implements ControllerInterface {
 
   protected model(name: string): ModelInterface {
     return this.application.model(name);
-  }
-
-  protected authenticate(
-    name: string,
-    config?: AuthenticateOptionsI,
-    verify?: VerifyFunction
-  ): Function {
-    return this.application.authenticate(name, config, verify);
   }
 }

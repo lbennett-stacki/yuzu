@@ -4,13 +4,16 @@ import { Middleware, Context } from 'koa';
 import koaCompose from 'koa-compose';
 import { Class } from './types/Class';
 import { Application } from './Application';
+import { deprecationMessage } from './Deprecation';
 
 export type AuthMiddleware = Middleware;
 export type VerifyFunction = (request, options?: object) => Promise<void>;
 
 export interface AuthenticateOptionsI {
-  session?: boolean;
   name: string;
+  session?: boolean;
+  scope?: string[];
+  failureRedirect?: string;
 }
 
 export interface AuthenticateMiddlewareOptionsI {
@@ -46,12 +49,20 @@ export class Authenticator {
     });
   }
 
-  authenticate(
-    name: string,
-    config?: AuthenticateOptionsI,
-    verify?: VerifyFunction
-  ): AuthMiddleware {
-    return this.auth.authenticate(name, config, verify);
+  authenticate(options: AuthenticateOptionsI | string): AuthMiddleware {
+    let name, config;
+    if (typeof options === 'string') {
+      deprecationMessage(
+        '`authenticate` route option of type string is deprecated, please use an object with key `name` instead'
+      );
+      name = options;
+      config = {};
+    } else {
+      name = options.name;
+      config = options;
+    }
+
+    return this.auth.authenticate(name, config);
   }
 
   isAuthenticated(): Middleware {

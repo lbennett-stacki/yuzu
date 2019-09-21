@@ -11,7 +11,6 @@ import { Session, SessionConfigInterface } from './Session';
 import {
   Authenticator,
   AuthMiddleware,
-  VerifyFunction,
   AuthenticateOptionsI,
 } from './Authenticator';
 
@@ -86,16 +85,22 @@ export class Application implements ApplicationInterface {
     return this.database.model(name);
   }
 
-  authenticate(
-    name: string,
-    options?: AuthenticateOptionsI,
-    verify?: VerifyFunction
-  ): AuthMiddleware {
-    const newOptions = {
-      ...options,
-      session:
-        options.session === undefined ? Boolean(this.session) : options.session,
-    };
-    return this.auth.authenticate(name, newOptions, verify);
+  authenticate(options: AuthenticateOptionsI | string): AuthMiddleware {
+    let newOptions = options;
+    if (typeof options !== 'string') {
+      newOptions = {
+        ...options,
+        session:
+          options.session === undefined
+            ? Boolean(this.session)
+            : options.session,
+      };
+    }
+
+    return this.auth.authenticate(newOptions);
+  }
+
+  isAuthenticated(): Middleware {
+    return this.auth.isAuthenticated();
   }
 }

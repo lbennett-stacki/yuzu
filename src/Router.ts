@@ -18,17 +18,23 @@ export interface RouterInterface {
   post(
     endpoint: string,
     controller: Class<Controller>,
-    action: string,
+    action?: string,
     config?: RouteConfigInterface
   ): void;
   get(
     endpoint: string,
     controller: Class<Controller>,
-    action: string,
+    action?: string,
+    config?: RouteConfigInterface
+  ): void;
+  put(
+    endpoint: string,
+    controller: Class<Controller>,
+    action?: string,
     config?: RouteConfigInterface
   ): void;
 
-  middleware(): RouterMiddleware;
+  middleware(): Middleware;
 }
 
 export class Router implements RouterInterface {
@@ -44,19 +50,28 @@ export class Router implements RouterInterface {
   post(
     endpoint: string,
     controller: Class<Controller>,
-    action: string,
+    action?: string,
     config?: RouteConfigInterface
   ): void {
-    this.register('post', endpoint, controller, action, config);
+    this.register('post', endpoint, controller, action || 'create', config);
   }
 
   get(
     endpoint: string,
     controller: Class<Controller>,
-    action: string,
+    action?: string,
     config?: RouteConfigInterface
   ): void {
-    this.register('get', endpoint, controller, action, config);
+    this.register('get', endpoint, controller, action || 'index', config);
+  }
+
+  put(
+    endpoint: string,
+    controller: Class<Controller>,
+    action?: string,
+    config?: RouteConfigInterface
+  ): void {
+    this.register('put', endpoint, controller, action || 'edit', config);
   }
 
   private register(

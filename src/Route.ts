@@ -1,11 +1,10 @@
 import { Controller } from './Controller';
 import { Application } from './Application';
 import { AuthenticateOptionsI } from './Authenticator';
-import { deprecationMessage } from './Deprecation';
 
 export interface RouteConfigInterface {
   authenticate?: string | AuthenticateOptionsI;
-  authenticated?: boolean;
+  isAuthenticated?: boolean;
 }
 
 export interface RouteInterface {
@@ -54,22 +53,15 @@ export class Route implements RouteInterface {
     const after = this.controller.after.map(middleware =>
       middleware.bind(this.controller)
     );
-    const { authenticate } = this.config;
+
+    const { authenticate, isAuthenticated } = this.config;
+
+    if (isAuthenticated) {
+      before.unshift(this.application.isAuthenticated());
+    }
 
     if (authenticate) {
-      let name, config;
-      if (typeof authenticate === 'string') {
-        deprecationMessage(
-          '`authenticate` route option of type string is deprecated, please use an object with key `name` instead'
-        );
-        name = authenticate;
-        config = {};
-      } else {
-        name = authenticate.name;
-        config = authenticate;
-      }
-
-      before.unshift(this.application.authenticate(name, config));
+      before.unshift(this.application.authenticate(authenticate));
     }
 
     return {
