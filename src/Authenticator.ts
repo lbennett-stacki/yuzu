@@ -7,7 +7,10 @@ import { Application } from './Application';
 import { deprecationMessage } from './Deprecation';
 
 export type AuthMiddleware = Middleware;
-export type VerifyFunction = (request, options?: object) => Promise<void>;
+export type VerifyFunction = (
+  request: Request,
+  options?: object
+) => Promise<void>;
 
 export interface AuthenticateOptionsI {
   name: string;
@@ -24,7 +27,7 @@ export class Authenticator {
   private auth: typeof koaPassport;
   private application: Application;
 
-  constructor(application) {
+  constructor(application: Application) {
     this.auth = koaPassport;
     this.application = application;
   }
@@ -37,14 +40,16 @@ export class Authenticator {
   ): void {
     this.auth.use(
       name,
-      new strategy(config, (...args): void => verify(this.application, ...args))
+      new strategy(config, (...args: (string | object | Function)[]): void =>
+        verify(this.application, ...args)
+      )
     );
 
-    this.auth.serializeUser(function(user, done) {
+    this.auth.serializeUser(function(user: object, done: Function) {
       done(null, user);
     });
 
-    this.auth.deserializeUser(function(user, done) {
+    this.auth.deserializeUser(function(user: object, done: Function) {
       done(null, user);
     });
   }

@@ -1,8 +1,11 @@
 import { Context } from './Server';
 import { Application } from './Application';
 import { ModelInterface } from './model/Model';
+import { Member } from './types/Class';
 
 export interface ControllerInterface {
+  [index: string]: Member;
+
   before: Function[];
   after: Function[];
   index(context: Context): Promise<Context>;
@@ -13,6 +16,8 @@ export interface ControllerInterface {
 }
 
 export class Controller implements ControllerInterface {
+  [index: string]: Member;
+
   private application: Application;
   before: Function[] = [];
   after: Function[] = [];

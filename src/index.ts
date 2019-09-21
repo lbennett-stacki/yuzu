@@ -17,8 +17,6 @@ export {
 
 export { Router, RouterInterface } from './Router';
 
-export { RouterMiddleware } from './RouterMiddleware';
-
 export { Server, ServerInterface, Context } from './Server';
 
 export {

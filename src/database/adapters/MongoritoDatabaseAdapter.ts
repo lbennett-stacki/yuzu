@@ -1,7 +1,10 @@
-import { Database as MongoritoDatabase, Model } from 'mongorito';
+import { Database as MongoritoDatabase } from 'mongorito';
 import { Class } from '../../types/Class';
 import { Database } from '../Database';
-import { MongoritoModelAdapter } from '../../model/adapters/MongoritoModelAdapter';
+import {
+  MongoritoModelAdapter,
+  StaticModel,
+} from '../../model/adapters/MongoritoModelAdapter';
 
 export class MongoritoDatabaseAdapter extends Database {
   private client: Class<MongoritoDatabase>;
@@ -28,7 +31,7 @@ export class MongoritoDatabaseAdapter extends Database {
     this.connection.disconnect();
   }
 
-  registerModel(model: Class<Model>, name: string): void {
+  registerModel(model: StaticModel, name: string): void {
     this.connection.register(model);
     super.registerModelAdapter(new MongoritoModelAdapter(model), name);
   }

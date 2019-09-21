@@ -8,7 +8,8 @@
         "esModuleInterop": true,
         "target": "es6",
         "baseUrl": "src",
-        "typeRoots": ["src/types", "node_modules/@types"]
+        "typeRoots": ["src/types", "node_modules/@types"],
+        "noImplicitAny": true
     },
     "include": [
         "src/**/*"

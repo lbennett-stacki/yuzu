@@ -1,19 +1,23 @@
 import { Middleware } from 'koa';
 import koaCompose from 'koa-compose';
-import { Class } from './types/Class';
+import { Class, Member } from './types/Class';
 import {
   Route,
   RouteConfigInterface,
   RouteBeforeAfterMiddleware,
 } from './Route';
-import { RouterMiddleware } from './RouterMiddleware';
+import KoaRouter from 'koa-router';
 import { Application } from './Application';
 import { Controller } from './Controller';
+
+class RouterRouter extends KoaRouter {
+  [index: string]: Member;
+}
 
 export interface RouterInterface {
   routes: Route[];
   controllers: Map<Class<Controller>, Controller>;
-  routerMiddleware: RouterMiddleware;
+  routerMiddleware: RouterRouter;
 
   post(
     endpoint: string,
@@ -40,7 +44,7 @@ export interface RouterInterface {
 export class Router implements RouterInterface {
   routes: Route[] = [];
   controllers: Map<Class<Controller>, Controller> = new Map();
-  routerMiddleware: RouterMiddleware;
+  routerMiddleware: RouterRouter;
   private application: Application;
 
   constructor(application: Application) {
@@ -75,7 +79,7 @@ export class Router implements RouterInterface {
   }
 
   private register(
-    method: string,
+    method: 'get' | 'post' | 'put',
     endpoint: string,
     controller: Class<Controller>,
     action: string,
@@ -108,7 +112,7 @@ export class Router implements RouterInterface {
   }
 
   middleware(): Middleware {
-    this.routerMiddleware = new RouterMiddleware();
+    this.routerMiddleware = new RouterRouter();
 
     this.buildMiddlewareRoutes();
 
@@ -121,6 +125,7 @@ export class Router implements RouterInterface {
   private buildMiddlewareRoutes(): void {
     this.routes.forEach((route: Route) => {
       const middleware: RouteBeforeAfterMiddleware = route.middleware();
+
       this.routerMiddleware[route.method](
         route.endpoint,
         ...middleware.before,

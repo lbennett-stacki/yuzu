@@ -4,15 +4,15 @@ import { RecordInterface } from '../record/Record';
 import { Class } from '../../types/Class';
 import { MongoritoRecordAdapter } from '../record/adapters/MongoritoRecordAdapter';
 
-interface StaticModelInterface extends Class<Model> {
-  find<T extends Model>(this: Class<T>, query?: object): Promise<T[]>;
-  sort<T extends Model>(this: Class<T>, query?: object): Promise<T[]>;
+export interface StaticModel extends Class<Model> {
+  find(where: object): Model[];
+  sort(sort: object): Model[];
 }
 
 export class MongoritoModelAdapter implements ModelInterface {
-  private model: StaticModelInterface;
+  private model: StaticModel;
 
-  constructor(model) {
+  constructor(model: StaticModel) {
     this.model = model;
   }
 
@@ -24,9 +24,9 @@ export class MongoritoModelAdapter implements ModelInterface {
 
     if (config.sort) query.sort(config.sort);
 
-    const records = await query.find(where);
+    const records: Model[] = await query.find(where);
 
-    return records.map(record => new MongoritoRecordAdapter(record));
+    return records.map((record: Model) => new MongoritoRecordAdapter(record));
   }
 
   findAll(): Promise<RecordInterface[]> {
