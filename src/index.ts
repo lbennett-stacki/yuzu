@@ -44,3 +44,5 @@ export { RecordInterface } from './model/record/Record';
 export {
   MongooseRecordAdapter,
 } from './model/record/adapters/MongooseRecordAdapter';
+
+export { TypeName, Schemable } from './types/Mongoose';
