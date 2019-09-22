@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import { RecordI } from '../Record';
 
-export class MongooseRecordAdapter<T> {
+export class MongooseRecordAdapter<T> implements RecordI<T> {
   private record: Document;
 
   constructor(record: Document) {

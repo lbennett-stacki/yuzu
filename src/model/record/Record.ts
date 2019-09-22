@@ -3,4 +3,7 @@ export interface RecordI<T> {
   toObject(): T;
 }
 
-// TODO: Add RecordCollectionI
+export interface RecordCollectionI<T> {
+  save(): Promise<RecordCollectionI<T>>;
+  toObject(): T[];
+}

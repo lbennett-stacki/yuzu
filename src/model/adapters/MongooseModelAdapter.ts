@@ -30,10 +30,16 @@ export class MongooseModelAdapter implements ModelI {
   }
 
   findAll<T>(): Promise<RecordI<T>[]> {
-    return this.find({});
+    return this.find<T>({});
   }
 
   create<T>(data: object): RecordI<T> {
-    return new MongooseRecordAdapter(new this.model(data));
+    return new MongooseRecordAdapter<T>(new this.model(data));
+  }
+
+  createAll<T>(datas: object[]): RecordI<T>[] {
+    return datas.map(
+      data => new MongooseRecordAdapter<T>(new this.model(data))
+    );
   }
 }
