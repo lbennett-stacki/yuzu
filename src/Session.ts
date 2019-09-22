@@ -3,22 +3,22 @@ import { Middleware } from 'koa';
 import { Server } from './Server';
 import { Class } from './types/Class';
 
-export interface SessionCookieConfigInterface {
+export interface SessionCookieConfigI {
   signingSecrets: string[];
   key: string;
   maxAge: number | 'session';
 }
 
-export interface SessionConfigInterface {
-  cookie?: SessionCookieConfigInterface;
+export interface SessionConfigI {
+  cookie?: SessionCookieConfigI;
   session?: Class<Session>;
 }
 
 export class Session {
   private sessionMiddleware: Middleware;
-  private config: SessionConfigInterface;
+  private config: SessionConfigI;
 
-  constructor(config: SessionConfigInterface) {
+  constructor(config: SessionConfigI) {
     this.config = config;
   }
 

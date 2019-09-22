@@ -5,7 +5,7 @@ import koaCompose from 'koa-compose';
 
 export type Context = KoaContext;
 
-export interface ServerInterface {
+export interface ServerI {
   server: Koa;
   port: number;
 

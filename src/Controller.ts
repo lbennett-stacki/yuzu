@@ -1,10 +1,10 @@
 import { Context } from './Server';
 import { Application } from './Application';
-import { ModelInterface } from './model/Model';
+import { ModelI } from './model/Model';
 import { Member } from './types/Class';
 import { AuthMiddleware, AuthenticateOptionsI } from './Authenticator';
 
-export interface ControllerInterface {
+export interface ControllerI {
   [index: string]: Member;
 
   before: Function[];
@@ -16,7 +16,7 @@ export interface ControllerInterface {
   destroy(context: Context): Promise<Context>;
 }
 
-export class Controller implements ControllerInterface {
+export class Controller implements ControllerI {
   [index: string]: Member;
 
   private application: Application;
@@ -47,7 +47,7 @@ export class Controller implements ControllerInterface {
     return context;
   }
 
-  protected model(name: string): ModelInterface {
+  protected model(name: string): ModelI {
     return this.application.model(name);
   }
 

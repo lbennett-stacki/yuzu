@@ -2,19 +2,16 @@ import { Middleware } from 'koa';
 import { Class } from './types/Class';
 import { Server } from './Server';
 import { Router } from './Router';
-import {
-  DatabaseInterface,
-  DatabaseConfigInterface,
-} from './database/Database';
-import { ModelInterface } from './model/Model';
-import { Session, SessionConfigInterface } from './Session';
+import { DatabaseI, DatabaseConfigI } from './database/Database';
+import { ModelI } from './model/Model';
+import { Session, SessionConfigI } from './Session';
 import {
   Authenticator,
   AuthMiddleware,
   AuthenticateOptionsI,
 } from './Authenticator';
 
-export interface ApplicationInterface {
+export interface ApplicationI {
   boot(): void;
   registerRouter(router: Class<Router>, routes: Function): void;
   registerDatabase(configResolver: Function): void;
@@ -22,22 +19,22 @@ export interface ApplicationInterface {
   model(name: string): void;
 }
 
-export interface ApplicationConfigInterface {
+export interface ApplicationConfigI {
   server: Server;
   router?: Router;
-  database?: DatabaseInterface;
+  database?: DatabaseI;
   session?: Session;
   auth?: Authenticator;
 }
 
-export class Application implements ApplicationInterface {
+export class Application implements ApplicationI {
   private server: Server;
   private router: Router;
-  private database: DatabaseInterface;
+  private database: DatabaseI;
   private session: Session;
   private auth: Authenticator;
 
-  constructor(config: ApplicationConfigInterface) {
+  constructor(config: ApplicationConfigI) {
     this.server = config.server;
     this.router = config.router;
     this.database = config.database;
@@ -63,14 +60,14 @@ export class Application implements ApplicationInterface {
   }
 
   registerDatabase(configResolver: Function): void {
-    const config: DatabaseConfigInterface = configResolver();
+    const config: DatabaseConfigI = configResolver();
 
     this.database = new config.adapter(config.client, config.connectionString);
     config.models(this.database);
   }
 
   registerSession(configResolver: Function): void {
-    const config: SessionConfigInterface = configResolver();
+    const config: SessionConfigI = configResolver();
 
     if (!config.session) return;
 
@@ -81,7 +78,7 @@ export class Application implements ApplicationInterface {
     this.auth = authenticatorResolver(this);
   }
 
-  model(name: string): ModelInterface {
+  model(name: string): ModelI {
     return this.database.model(name);
   }
 

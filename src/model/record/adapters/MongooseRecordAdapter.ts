@@ -1,5 +1,5 @@
 import { Document } from 'mongoose';
-import { RecordInterface } from '../Record';
+import { RecordI } from '../Record';
 
 export class MongooseRecordAdapter<T> {
   private record: Document;
@@ -8,7 +8,7 @@ export class MongooseRecordAdapter<T> {
     this.record = record;
   }
 
-  async save(): Promise<RecordInterface<T>> {
+  async save(): Promise<RecordI<T>> {
     await this.record.save();
     return new MongooseRecordAdapter<T>(this.record);
   }

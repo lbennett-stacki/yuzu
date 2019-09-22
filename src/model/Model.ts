@@ -1,14 +1,11 @@
-import { RecordInterface } from './record/Record';
+import { RecordI } from './record/Record';
 
 export interface ModelFindConfig {
   sort: object;
 }
 
-export interface ModelInterface {
-  create<T>(data: object): RecordInterface<T>;
-  find<T>(
-    where: object,
-    config?: ModelFindConfig
-  ): Promise<RecordInterface<T>[]>;
-  findAll<T>(): Promise<RecordInterface<T>[]>;
+export interface ModelI {
+  create<T>(data: object): RecordI<T>;
+  find<T>(where: object, config?: ModelFindConfig): Promise<RecordI<T>[]>;
+  findAll<T>(): Promise<RecordI<T>[]>;
 }

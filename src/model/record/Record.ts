@@ -1,6 +1,6 @@
-export interface RecordInterface<T> {
-  save(): Promise<RecordInterface<T>>;
+export interface RecordI<T> {
+  save(): Promise<RecordI<T>>;
   toObject(): T;
 }
 
-// TODO: Add RecordCollectionInterface
+// TODO: Add RecordCollectionI

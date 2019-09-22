@@ -2,17 +2,17 @@ import { Controller } from './Controller';
 import { Application } from './Application';
 import { AuthenticateOptionsI } from './Authenticator';
 
-export interface RouteConfigInterface {
+export interface RouteConfigI {
   authenticate?: string | AuthenticateOptionsI;
   isAuthenticated?: boolean;
 }
 
-export interface RouteInterface {
+export interface RouteI {
   readonly method: string;
   readonly endpoint: string;
   readonly controller: Controller;
   readonly action: string;
-  readonly config?: RouteConfigInterface;
+  readonly config?: RouteConfigI;
 }
 
 export interface RouteBeforeAfterMiddleware {
@@ -20,12 +20,12 @@ export interface RouteBeforeAfterMiddleware {
   after: Function[];
 }
 
-export class Route implements RouteInterface {
+export class Route implements RouteI {
   readonly method: string;
   readonly endpoint: string;
   readonly controller: Controller;
   readonly action: string;
-  readonly config: RouteConfigInterface = {};
+  readonly config: RouteConfigI = {};
   readonly controllerAction: Function;
   private application: Application;
 
@@ -35,7 +35,7 @@ export class Route implements RouteInterface {
     endpoint: string,
     controller: Controller,
     action: string,
-    config: RouteConfigInterface = {}
+    config: RouteConfigI = {}
   ) {
     this.application = application;
     this.method = method;

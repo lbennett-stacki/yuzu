@@ -1,11 +1,7 @@
 import { Middleware } from 'koa';
 import koaCompose from 'koa-compose';
 import { Class, Member } from './types/Class';
-import {
-  Route,
-  RouteConfigInterface,
-  RouteBeforeAfterMiddleware,
-} from './Route';
+import { Route, RouteConfigI, RouteBeforeAfterMiddleware } from './Route';
 import KoaRouter from 'koa-router';
 import { Application } from './Application';
 import { Controller } from './Controller';
@@ -14,7 +10,7 @@ class RouterRouter extends KoaRouter {
   [index: string]: Member;
 }
 
-export interface RouterInterface {
+export interface RouterI {
   routes: Route[];
   controllers: Map<Class<Controller>, Controller>;
   routerMiddleware: RouterRouter;
@@ -23,25 +19,25 @@ export interface RouterInterface {
     endpoint: string,
     controller: Class<Controller>,
     action?: string,
-    config?: RouteConfigInterface
+    config?: RouteConfigI
   ): void;
   get(
     endpoint: string,
     controller: Class<Controller>,
     action?: string,
-    config?: RouteConfigInterface
+    config?: RouteConfigI
   ): void;
   put(
     endpoint: string,
     controller: Class<Controller>,
     action?: string,
-    config?: RouteConfigInterface
+    config?: RouteConfigI
   ): void;
 
   middleware(): Middleware;
 }
 
-export class Router implements RouterInterface {
+export class Router implements RouterI {
   routes: Route[] = [];
   controllers: Map<Class<Controller>, Controller> = new Map();
   routerMiddleware: RouterRouter;
@@ -55,7 +51,7 @@ export class Router implements RouterInterface {
     endpoint: string,
     controller: Class<Controller>,
     action?: string,
-    config?: RouteConfigInterface
+    config?: RouteConfigI
   ): void {
     this.register('post', endpoint, controller, action || 'create', config);
   }
@@ -64,7 +60,7 @@ export class Router implements RouterInterface {
     endpoint: string,
     controller: Class<Controller>,
     action?: string,
-    config?: RouteConfigInterface
+    config?: RouteConfigI
   ): void {
     this.register('get', endpoint, controller, action || 'index', config);
   }
@@ -73,7 +69,7 @@ export class Router implements RouterInterface {
     endpoint: string,
     controller: Class<Controller>,
     action?: string,
-    config?: RouteConfigInterface
+    config?: RouteConfigI
   ): void {
     this.register('put', endpoint, controller, action || 'edit', config);
   }
@@ -83,7 +79,7 @@ export class Router implements RouterInterface {
     endpoint: string,
     controller: Class<Controller>,
     action: string,
-    config: RouteConfigInterface = {}
+    config: RouteConfigI = {}
   ): void {
     const controllerInstance = this.registerController(controller);
 
