@@ -1,19 +1,34 @@
 import { Document } from 'mongoose';
-import { RecordI } from '../Record';
+import { RecordI, Record } from '../Record';
 
-export class MongooseRecordAdapter<T> implements RecordI<T> {
-  private record: Document;
+interface DocumentIndexed extends Document {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [index: string]: any;
+}
+
+export class MongooseRecordAdapter<T> extends Record<T> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [index: string]: any;
+
+  private record: DocumentIndexed;
 
   constructor(record: Document) {
-    this.record = record;
+    super(record);
   }
 
   async save(): Promise<RecordI<T>> {
     await this.record.save();
-    return new MongooseRecordAdapter<T>(this.record);
+
+    return this;
   }
 
   toObject(): T {
     return this.record.toObject();
+  }
+
+  static create<T>(record: Document): MongooseRecordAdapter<T> {
+    const mongooseRecord = new MongooseRecordAdapter<T>(record);
+
+    return new Proxy(mongooseRecord, Record.proxyHandler());
   }
 }

@@ -23,11 +23,11 @@ export class MongooseModelAdapter implements ModelI {
       query.exec((error, results: Document[]) => {
         if (error) return reject(error);
 
-        const records = results.map(
-          (result: Document) => new MongooseRecordAdapter<T>(result)
+        const records = results.map((result: Document) =>
+          MongooseRecordAdapter.create<T>(result)
         );
 
-        return resolve(new MongooseRecordCollectionAdapter(records));
+        return resolve(new MongooseRecordCollectionAdapter<T>(records));
       });
     });
   }
@@ -37,11 +37,11 @@ export class MongooseModelAdapter implements ModelI {
   }
 
   create<T>(data: object): RecordI<T> {
-    return new MongooseRecordAdapter<T>(new this.model(data));
+    return MongooseRecordAdapter.create<T>(new this.model(data));
   }
 
   createAll<T>(datas: object[]): RecordCollectionI<T> {
-    return new MongooseRecordCollectionAdapter(
+    return new MongooseRecordCollectionAdapter<T>(
       datas.map(data => this.create(data))
     );
   }
@@ -62,8 +62,8 @@ export class MongooseModelAdapter implements ModelI {
     const records = await this.model.bulkWrite(ops);
 
     return new MongooseRecordCollectionAdapter(
-      records.result.upserted.map(
-        (record: Document) => new MongooseRecordAdapter<T>(record)
+      records.result.upserted.map((record: Document) =>
+        MongooseRecordAdapter.create<T>(record)
       )
     );
   }
