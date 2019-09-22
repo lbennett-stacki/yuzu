@@ -11,6 +11,7 @@ export * from './model/Model';
 export * from './model/adapters/MongooseModelAdapter';
 export * from './model/record/Record';
 export * from './model/record/adapters/MongooseRecordAdapter';
+export * from './model/record/adapters/MongooseRecordCollectionAdapter';
 
 export * from './Session';
 export * from './Authenticator';

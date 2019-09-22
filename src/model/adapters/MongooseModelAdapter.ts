@@ -1,7 +1,8 @@
 import { Model, Document } from 'mongoose';
 import { ModelI, ModelFindConfig } from '../Model';
-import { RecordI } from '../record/Record';
+import { RecordI, RecordCollectionI } from '../record/Record';
 import { MongooseRecordAdapter } from '../record/adapters/MongooseRecordAdapter';
+import { MongooseRecordCollectionAdapter } from '../record/adapters/MongooseRecordCollectionAdapter';
 
 export class MongooseModelAdapter implements ModelI {
   private model: Model<Document>;
@@ -10,7 +11,10 @@ export class MongooseModelAdapter implements ModelI {
     this.model = model;
   }
 
-  find<T>(where: object, config?: ModelFindConfig): Promise<RecordI<T>[]> {
+  find<T>(
+    where: object,
+    config?: ModelFindConfig
+  ): Promise<RecordCollectionI<T>> {
     return new Promise((resolve, reject): void => {
       const query = this.model.find(where);
 
@@ -20,16 +24,15 @@ export class MongooseModelAdapter implements ModelI {
         if (error) return reject(error);
 
         const records = results.map(
-          (result: Document): MongooseRecordAdapter<T> =>
-            new MongooseRecordAdapter<T>(result)
+          (result: Document) => new MongooseRecordAdapter<T>(result)
         );
 
-        return resolve(records);
+        return resolve(new MongooseRecordCollectionAdapter(records));
       });
     });
   }
 
-  findAll<T>(): Promise<RecordI<T>[]> {
+  findAll<T>(): Promise<RecordCollectionI<T>> {
     return this.find<T>({});
   }
 
@@ -37,9 +40,9 @@ export class MongooseModelAdapter implements ModelI {
     return new MongooseRecordAdapter<T>(new this.model(data));
   }
 
-  createAll<T>(datas: object[]): RecordI<T>[] {
-    return datas.map(
-      data => new MongooseRecordAdapter<T>(new this.model(data))
+  createAll<T>(datas: object[]): RecordCollectionI<T> {
+    return new MongooseRecordCollectionAdapter(
+      datas.map(data => this.create(data))
     );
   }
 }
