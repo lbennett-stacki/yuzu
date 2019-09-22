@@ -2,6 +2,7 @@ import { Context } from './Server';
 import { Application } from './Application';
 import { ModelInterface } from './model/Model';
 import { Member } from './types/Class';
+import { AuthMiddleware, AuthenticateOptionsI } from './Authenticator';
 
 export interface ControllerInterface {
   [index: string]: Member;
@@ -48,5 +49,11 @@ export class Controller implements ControllerInterface {
 
   protected model(name: string): ModelInterface {
     return this.application.model(name);
+  }
+
+  protected authenticate(
+    options: AuthenticateOptionsI | string
+  ): AuthMiddleware {
+    return this.application.authenticate(options);
   }
 }
