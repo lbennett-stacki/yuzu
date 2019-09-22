@@ -1,5 +1,5 @@
 import { Model, Document } from 'mongoose';
-import { ModelI, ModelFindConfig } from '../Model';
+import { ModelI, ModelFindConfig, ModelUpsertConfig } from '../Model';
 import { RecordI, RecordCollectionI } from '../record/Record';
 import { MongooseRecordAdapter } from '../record/adapters/MongooseRecordAdapter';
 import { MongooseRecordCollectionAdapter } from '../record/adapters/MongooseRecordCollectionAdapter';
@@ -43,6 +43,28 @@ export class MongooseModelAdapter implements ModelI {
   createAll<T>(datas: object[]): RecordCollectionI<T> {
     return new MongooseRecordCollectionAdapter(
       datas.map(data => this.create(data))
+    );
+  }
+
+  async upsertAll<T>(
+    upserts: ModelUpsertConfig[]
+  ): Promise<RecordCollectionI<T>> {
+    const ops = upserts.map((upsert: ModelUpsertConfig) => {
+      return {
+        updateOne: {
+          upsert: true,
+          update: upsert.data,
+          filter: upsert.where,
+        },
+      };
+    });
+
+    const records = await this.model.bulkWrite(ops);
+
+    return new MongooseRecordCollectionAdapter(
+      records.result.upserted.map(
+        (record: Document) => new MongooseRecordAdapter<T>(record)
+      )
     );
   }
 }
