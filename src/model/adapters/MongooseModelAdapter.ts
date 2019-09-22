@@ -36,8 +36,4 @@ export class MongooseModelAdapter implements ModelI {
   create<T>(data: object): RecordI<T> {
     return new MongooseRecordAdapter(new this.model(data));
   }
-
-  create<T>(data: object): RecordI<T> {
-    return new MongooseRecordAdapter(new this.model(data));
-  }
 }
