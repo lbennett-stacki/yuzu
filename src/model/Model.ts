@@ -12,6 +12,7 @@ export interface ModelUpsertConfig {
 export interface ModelI {
   create<T>(data: object): RecordI<T>;
   createAll<T>(datas: object[]): RecordCollectionI<T>;
+  upsert<T>(where: object, data: object): Promise<RecordI<T>>;
   upsertAll<T>(upserts: ModelUpsertConfig[]): Promise<RecordCollectionI<T>>;
   find<T>(
     where: object,

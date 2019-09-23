@@ -18,7 +18,10 @@ export class MongooseDatabaseAdapter extends Database {
   }
 
   connect(): void {
-    this.client.connect(this.connectionString, { useNewUrlParser: true });
+    this.client.connect(this.connectionString, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+    });
   }
 
   disconnect(): void {

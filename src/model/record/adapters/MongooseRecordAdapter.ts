@@ -17,13 +17,20 @@ export class MongooseRecordAdapter<T> extends Record<T> {
   }
 
   async save(): Promise<RecordI<T>> {
-    await this.record.save();
+    const record = await this.record.save();
 
-    return this;
+    return MongooseRecordAdapter.create(record);
   }
 
   toObject(): T {
     return this.record.toObject();
+  }
+
+  load(relation: string): Promise<MongooseRecordAdapter<T>> {
+    return this.record
+      .populate(relation)
+      .execPopulate()
+      .then((record: Document) => MongooseRecordAdapter.create(record));
   }
 
   static create<T>(record: Document): MongooseRecordAdapter<T> {

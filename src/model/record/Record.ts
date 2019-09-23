@@ -3,6 +3,7 @@ export interface RecordI<T> {
   [index: string]: any; // TODO: improve. index should be limited to keyof T
   save(): Promise<RecordI<T>>;
   toObject(): T;
+  load(relation: string): Promise<RecordI<T>>;
 }
 
 export abstract class Record<T> implements RecordI<T> {
@@ -16,11 +17,13 @@ export abstract class Record<T> implements RecordI<T> {
 
   abstract save(): Promise<RecordI<T>>;
   abstract toObject(): T;
+  abstract load(relation: string): Promise<RecordI<T>>;
 
   static proxyHandler<T>(): object {
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       get(obj: Record<T>, prop: string): any {
+        console.log(obj, prop, 'gett');
         return obj[prop] || obj.record[prop];
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -36,4 +39,30 @@ export abstract class Record<T> implements RecordI<T> {
 export interface RecordCollectionI<T> {
   save(): Promise<RecordCollectionI<T>>;
   toObject(): T[];
+  at(index: number): RecordI<T>;
+}
+
+// TODO: iteratorrr
+export abstract class RecordCollection<T> implements RecordCollectionI<T> {
+  protected records: RecordI<T>[];
+
+  constructor(records: RecordI<T>[]) {
+    this.records = records;
+  }
+
+  save(): Promise<RecordCollectionI<T>> {
+    return Promise.all(
+      this.records.map((record: RecordI<T>) => record.save())
+    ).then((records: RecordI<T>[]) => this.adapt(records));
+  }
+
+  toObject(): T[] {
+    return this.records.map((record: RecordI<T>) => record.toObject());
+  }
+
+  at(index: number): RecordI<T> {
+    return this.records[index];
+  }
+
+  abstract adapt(records: RecordI<T>[]): RecordCollectionI<T>;
 }
