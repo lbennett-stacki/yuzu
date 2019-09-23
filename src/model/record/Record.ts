@@ -23,7 +23,6 @@ export abstract class Record<T> implements RecordI<T> {
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       get(obj: Record<T>, prop: string): any {
-        console.log(obj, prop, 'gett');
         return obj[prop] || obj.record[prop];
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

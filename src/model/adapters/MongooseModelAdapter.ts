@@ -32,6 +32,12 @@ export class MongooseModelAdapter implements ModelI {
     });
   }
 
+  findOne<T>(where: object, config?: ModelFindConfig): Promise<RecordI<T>> {
+    return this.model
+      .findOne(where, config)
+      .then((record: Document) => MongooseModelAdapter.record(record));
+  }
+
   findAll<T>(): Promise<RecordCollectionI<T>> {
     return this.find<T>({});
   }
@@ -48,7 +54,6 @@ export class MongooseModelAdapter implements ModelI {
 
   upsert<T>(where: object, data: object): Promise<RecordI<T>> {
     return new Promise((resolve: Function, reject: Function): void => {
-      console.log(where, data, 'WHERE U AT');
       this.model.findOneAndUpdate(
         where,
         data,

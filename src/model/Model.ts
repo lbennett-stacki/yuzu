@@ -18,5 +18,6 @@ export interface ModelI {
     where: object,
     config?: ModelFindConfig
   ): Promise<RecordCollectionI<T>>;
+  findOne<T>(where: object, config?: ModelFindConfig): Promise<RecordI<T>>;
   findAll<T>(): Promise<RecordCollectionI<T>>;
 }
