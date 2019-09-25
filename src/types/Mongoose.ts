@@ -17,8 +17,12 @@ export interface SchemaConfig<T> {
 }
 
 export type SchemableOne<T> = SchemaConfig<T>;
-export type SchemableMany<T> = [SchemaConfig<T>];
+export type SchemableMany<T> = SchemaConfig<T>[];
 
-export type Schemable<T> = {
-  [P in keyof T]: SchemableOne<TypeName<T[P]>> | SchemableMany<TypeName<T[P]>>;
+export declare type SchemableProp<T> = T extends object[]
+  ? SchemableMany<TypeName<T>>
+  : SchemableOne<TypeName<T>> | Schemable<T>;
+
+export declare type Schemable<T> = {
+  [P in keyof T]: SchemableProp<T[P]>;
 };
