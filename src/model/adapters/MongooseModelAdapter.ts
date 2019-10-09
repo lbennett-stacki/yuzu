@@ -63,7 +63,7 @@ export class MongooseModelAdapter implements ModelI {
           runValidators: true,
           new: true,
         },
-        function itsHEREE(error: Error, record: Document) {
+        (error: Error, record: Document) => {
           if (error) return reject(error);
           if (record) return resolve(MongooseModelAdapter.record<T>(record));
         }
