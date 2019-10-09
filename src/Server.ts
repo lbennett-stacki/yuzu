@@ -13,12 +13,17 @@ export interface ServerI {
   use(middleware: Middleware): Server;
 }
 
+export interface ServerConfigI {
+  port?: number;
+}
+
 export class Server {
   server: Koa;
   private readonly port: number = 4433;
 
-  constructor() {
+  constructor(config: ServerConfigI = {}) {
     this.server = new Koa();
+    if (config.port) this.port = config.port;
   }
 
   init(middlewares: Middleware[]): void {

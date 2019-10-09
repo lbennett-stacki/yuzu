@@ -25,6 +25,7 @@ export interface ApplicationConfigI {
   database?: DatabaseI;
   session?: Session;
   auth?: Authenticator;
+  errorHandler?: Middleware;
 }
 
 export class Application implements ApplicationI {
@@ -33,6 +34,7 @@ export class Application implements ApplicationI {
   private database: DatabaseI;
   private session: Session;
   private auth: Authenticator;
+  private errorHandler: Middleware;
 
   constructor(config: ApplicationConfigI) {
     this.server = config.server;
@@ -40,6 +42,7 @@ export class Application implements ApplicationI {
     this.database = config.database;
     this.session = config.session;
     this.auth = config.auth;
+    this.errorHandler = config.errorHandler;
   }
 
   boot(): void {
@@ -51,6 +54,7 @@ export class Application implements ApplicationI {
       this.auth.middleware({ session: Boolean(this.session) }),
       this.router.middleware()
     );
+    if (this.errorHandler) middlewares.unshift(this.errorHandler);
     this.server.init(middlewares);
   }
 
@@ -76,6 +80,10 @@ export class Application implements ApplicationI {
 
   registerAuth(authenticatorResolver: Function): void {
     this.auth = authenticatorResolver(this);
+  }
+
+  registerErrorHandler(errorHandler: Middleware): void {
+    this.errorHandler = errorHandler;
   }
 
   model(name: string): ModelI {
