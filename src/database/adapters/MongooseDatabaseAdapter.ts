@@ -21,6 +21,7 @@ export class MongooseDatabaseAdapter extends Database {
     this.client.connect(this.connectionString, {
       useNewUrlParser: true,
       useFindAndModify: false,
+      useCreateIndex: true,
     });
   }
 
