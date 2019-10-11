@@ -63,5 +63,9 @@ export abstract class RecordCollection<T> implements RecordCollectionI<T> {
     return this.records[index];
   }
 
+  length(): number {
+    return this.records.length;
+  }
+
   abstract adapt(records: RecordI<T>[]): RecordCollectionI<T>;
 }

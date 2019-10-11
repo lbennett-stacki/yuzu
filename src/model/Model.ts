@@ -1,7 +1,7 @@
 import { RecordI, RecordCollectionI } from './record/Record';
 
 export interface ModelFindConfig {
-  sort: object;
+  sort?: object;
 }
 
 export interface ModelUpsertConfig {

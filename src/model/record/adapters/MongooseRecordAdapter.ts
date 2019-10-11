@@ -33,6 +33,10 @@ export class MongooseRecordAdapter<T> extends Record<T> {
       .then((record: Document) => MongooseRecordAdapter.create(record));
   }
 
+  markModified(path: string): void {
+    this.record.markModified(path)
+  }
+
   static create<T>(record: Document): MongooseRecordAdapter<T> {
     const mongooseRecord = new MongooseRecordAdapter<T>(record);
 

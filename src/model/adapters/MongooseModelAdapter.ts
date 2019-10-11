@@ -13,12 +13,12 @@ export class MongooseModelAdapter implements ModelI {
 
   find<T>(
     where: object,
-    config?: ModelFindConfig
+    config: ModelFindConfig = {}
   ): Promise<RecordCollectionI<T>> {
     return new Promise((resolve, reject): void => {
       const query = this.model.find(where);
 
-      if (config && config.sort) query.sort(config.sort);
+      if (config.sort) query.sort(config.sort);
 
       query.exec((error, results: Document[]) => {
         if (error) return reject(error);
@@ -32,10 +32,13 @@ export class MongooseModelAdapter implements ModelI {
     });
   }
 
-  findOne<T>(where: object, config?: ModelFindConfig): Promise<RecordI<T>> {
-    return this.model
-      .findOne(where, config)
-      .then((record: Document) => MongooseModelAdapter.record(record));
+  findOne<T>(where: object): Promise<RecordI<T> | undefined> {
+    return new Promise((resolve, reject): void => {
+      this.model.findOne(where, (error, result) => {
+        if (error) return reject(error);
+        resolve(MongooseModelAdapter.record(result));
+      });
+    });
   }
 
   findAll<T>(): Promise<RecordCollectionI<T>> {
@@ -85,7 +88,9 @@ export class MongooseModelAdapter implements ModelI {
     return new MongooseRecordCollectionAdapter(records);
   }
 
-  static record<T>(record: Document): RecordI<T> {
+  static record<T>(record: Document): RecordI<T> | undefined {
+    if (!record) return;
+
     return MongooseRecordAdapter.create<T>(record);
   }
 }
