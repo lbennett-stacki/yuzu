@@ -35,7 +35,7 @@ export class MongooseRecordAdapter<T> extends Record<T> {
 
   // TODO: document, unique to mongoose implementations
   markModified(path: string): void {
-    this.record.markModified(path)
+    this.record.markModified(path);
   }
 
   static create<T>(record: Document): MongooseRecordAdapter<T> {
