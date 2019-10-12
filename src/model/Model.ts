@@ -2,6 +2,7 @@ import { RecordI, RecordCollectionI } from './record/Record';
 
 export interface ModelFindConfig {
   sort?: object;
+  limit?: number;
 }
 
 export interface ModelUpsertConfig {

@@ -19,6 +19,7 @@ export class MongooseModelAdapter implements ModelI {
       const query = this.model.find(where);
 
       if (config.sort) query.sort(config.sort);
+      if (config.limit) query.limit(config.limit);
 
       query.exec((error, results: Document[]) => {
         if (error) return reject(error);

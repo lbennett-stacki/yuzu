@@ -11,6 +11,7 @@ export type TypeName<T> = T extends string
 export interface SchemaConfig<T> {
   type: T;
   required?: boolean;
+  index?: boolean;
   unique?: boolean;
   default?: boolean;
   ref?: string;
