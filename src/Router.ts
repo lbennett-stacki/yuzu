@@ -114,7 +114,7 @@ export class Router implements RouterI {
 
     return koaCompose([
       this.routerMiddleware.routes(),
-      this.routerMiddleware.routes(),
+      this.routerMiddleware.allowedMethods(),
     ]);
   }
 

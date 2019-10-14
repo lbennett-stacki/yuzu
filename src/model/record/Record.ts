@@ -39,6 +39,7 @@ export interface RecordCollectionI<T> {
   save(): Promise<RecordCollectionI<T>>;
   toObject(): T[];
   at(index: number): RecordI<T>;
+  length(): number;
 }
 
 // TODO: iteratorrr

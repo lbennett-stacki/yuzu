@@ -16,6 +16,7 @@ export interface ControllerI {
   destroy(context: Context): Promise<Context>;
 }
 
+// TODO: abstract
 export class Controller implements ControllerI {
   [index: string]: Member;
 
