@@ -1,6 +1,6 @@
 {
   "name": "@lbennett/yuzu",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Yuzu is a server-side MVC framework written in TypeScript",
   "main": "dist",
   "repository": "github:LukeeeeBennett/yuzu",
