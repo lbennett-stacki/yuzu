@@ -89,6 +89,16 @@ export class MongooseModelAdapter implements ModelI {
     return new MongooseRecordCollectionAdapter(records);
   }
 
+  deleteOne<T>(where: object): Promise<object> {
+    return new Promise((resolve, reject): void => {
+      this.model.deleteOne(where, error => {
+        if (error) return reject(error);
+
+        return resolve();
+      });
+    });
+  }
+
   static record<T>(record: Document): RecordI<T> | undefined {
     if (!record) return;
 

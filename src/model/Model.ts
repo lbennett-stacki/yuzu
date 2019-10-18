@@ -21,4 +21,5 @@ export interface ModelI {
   ): Promise<RecordCollectionI<T>>;
   findOne<T>(where: object, config?: ModelFindConfig): Promise<RecordI<T>>;
   findAll<T>(): Promise<RecordCollectionI<T>>;
+  deleteOne<T>(where: object): Promise<object>;
 }
