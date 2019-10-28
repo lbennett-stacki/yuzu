@@ -10,10 +10,16 @@ class RouterRouter extends KoaRouter {
   [index: string]: Member;
 }
 
+export interface NestedRouterMiddlewareI {
+  middleware: Middleware[];
+  router: RouterI;
+}
+
 export interface RouterI {
   routes: Route[];
   controllers: Map<Class<Controller>, Controller>;
   routerMiddleware: RouterRouter;
+  ns: string;
 
   post(
     endpoint: string,
@@ -34,17 +40,22 @@ export interface RouterI {
     config?: RouteConfigI
   ): void;
 
+  namespace(name: string, block: Function): void;
+
   middleware(): Middleware;
 }
 
 export class Router implements RouterI {
   routes: Route[] = [];
+  nsRouters: Router[] = [];
   controllers: Map<Class<Controller>, Controller> = new Map();
   routerMiddleware: RouterRouter;
   private application: Application;
+  ns: string;
 
-  constructor(application: Application) {
+  constructor(application: Application, ns: string) {
     this.application = application;
+    this.ns = ns;
   }
 
   post(
@@ -72,6 +83,12 @@ export class Router implements RouterI {
     config?: RouteConfigI
   ): void {
     this.register('put', endpoint, controller, action || 'edit', config);
+  }
+
+  namespace(name: string, block: Function): void {
+    const router = new Router(this.application, name);
+    block(router);
+    this.nsRouters.push(router);
   }
 
   private register(
@@ -108,17 +125,25 @@ export class Router implements RouterI {
   }
 
   middleware(): Middleware {
-    this.routerMiddleware = new RouterRouter();
-
-    this.buildMiddlewareRoutes();
-
-    return koaCompose([
-      this.routerMiddleware.routes(),
-      this.routerMiddleware.allowedMethods(),
-    ]);
+    return koaCompose(this.buildMiddleware());
   }
 
-  private buildMiddlewareRoutes(): void {
+  buildMiddleware(): Middleware[] {
+    this.routerMiddleware = new RouterRouter();
+
+    const nested = this.buildMiddlewareRoutes();
+
+    nested.forEach((middleware: NestedRouterMiddlewareI) => {
+      this.routerMiddleware.use(middleware.router.ns, ...middleware.middleware);
+    });
+
+    return [
+      this.routerMiddleware.routes(),
+      this.routerMiddleware.allowedMethods(),
+    ];
+  }
+
+  private buildMiddlewareRoutes(): NestedRouterMiddlewareI[] {
     this.routes.forEach((route: Route) => {
       const middleware: RouteBeforeAfterMiddleware = route.middleware();
 
@@ -128,6 +153,10 @@ export class Router implements RouterI {
         route.controllerAction,
         ...middleware.after
       );
+    });
+
+    return this.nsRouters.map((router: Router) => {
+      return { middleware: router.buildMiddleware(), router };
     });
   }
 }
