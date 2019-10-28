@@ -13,16 +13,13 @@ export interface SchemaConfig<T> {
   required?: boolean;
   index?: boolean;
   unique?: boolean;
-  default?: boolean;
+  default?: boolean | string | number;
   ref?: string;
 }
 
-export type SchemableOne<T> = SchemaConfig<T>;
-export type SchemableMany<T> = SchemaConfig<T>[];
-
-export type SchemableProp<T> = T extends object[]
-  ? SchemableMany<TypeName<T>>
-  : SchemableOne<TypeName<T>> | Schemable<T>;
+export type SchemableProp<T> = T extends number | boolean | string
+  ? SchemaConfig<TypeName<T>>
+  : SchemaConfig<TypeName<T>> | Schemable<T>;
 
 export type Schemable<T> = {
   [P in keyof T]: SchemableProp<T[P]>;
