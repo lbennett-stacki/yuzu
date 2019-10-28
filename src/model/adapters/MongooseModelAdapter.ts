@@ -89,7 +89,7 @@ export class MongooseModelAdapter implements ModelI {
     return new MongooseRecordCollectionAdapter(records);
   }
 
-  deleteOne<T>(where: object): Promise<object> {
+  deleteOne<T>(where: object): Promise<RecordI<T>> {
     return new Promise((resolve, reject): void => {
       this.model.deleteOne(where, error => {
         if (error) return reject(error);
@@ -97,6 +97,20 @@ export class MongooseModelAdapter implements ModelI {
         return resolve();
       });
     });
+  }
+
+  delete<T>(where: object): Promise<RecordCollectionI<T>> {
+    return new Promise((resolve, reject): void => {
+      this.model.deleteMany(where, error => {
+        if (error) return reject(error);
+
+        return resolve();
+      });
+    });
+  }
+
+  deleteAll<T>(): Promise<RecordCollectionI<T>> {
+    return this.delete({});
   }
 
   static record<T>(record: Document): RecordI<T> | undefined {
