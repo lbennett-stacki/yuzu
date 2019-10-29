@@ -49,12 +49,18 @@ export class Application implements ApplicationI {
     if (this.database) this.database.init();
 
     const middlewares: Middleware[] = [];
+
     if (this.session) middlewares.push(this.session.middleware(this.server));
-    middlewares.push(
-      this.auth.middleware({ session: Boolean(this.session) }),
-      this.router.middleware()
-    );
+
+    if (this.auth)
+      middlewares.push(
+        this.auth.middleware({ session: Boolean(this.session) })
+      );
+
+    middlewares.push(this.router.middleware());
+
     if (this.errorHandler) middlewares.unshift(this.errorHandler);
+
     this.server.init(middlewares);
   }
 
