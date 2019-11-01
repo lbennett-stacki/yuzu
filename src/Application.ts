@@ -1,4 +1,5 @@
 import { Middleware } from 'koa';
+import logger from 'koa-logger';
 import { Class } from './types/Class';
 import { Server } from './Server';
 import { Router } from './Router';
@@ -26,6 +27,7 @@ export interface ApplicationConfigI {
   session?: Session;
   auth?: Authenticator;
   errorHandler?: Middleware;
+  hasLogger?: boolean;
 }
 
 export class Application implements ApplicationI {
@@ -35,6 +37,7 @@ export class Application implements ApplicationI {
   private session: Session;
   private auth: Authenticator;
   private errorHandler: Middleware;
+  private hasLogger: boolean;
 
   constructor(config: ApplicationConfigI) {
     this.server = config.server;
@@ -43,6 +46,7 @@ export class Application implements ApplicationI {
     this.session = config.session;
     this.auth = config.auth;
     this.errorHandler = config.errorHandler;
+    this.hasLogger = config.hasLogger === undefined ? true : config.hasLogger;
   }
 
   boot(): void {
@@ -51,6 +55,8 @@ export class Application implements ApplicationI {
     const middlewares: Middleware[] = [];
 
     if (this.session) middlewares.push(this.session.middleware(this.server));
+
+    if (this.hasLogger) middlewares.push(logger());
 
     if (this.auth)
       middlewares.push(
