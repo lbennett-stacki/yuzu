@@ -52,10 +52,12 @@ export class Router implements RouterI {
   routerMiddleware: RouterRouter;
   private application: Application;
   ns: string;
+  config: RouteConfigI;
 
-  constructor(application: Application, ns: string) {
+  constructor(application: Application, ns?: string, config?: RouteConfigI) {
     this.application = application;
     this.ns = ns;
+    this.config = config;
   }
 
   post(
@@ -85,8 +87,8 @@ export class Router implements RouterI {
     this.register('put', endpoint, controller, action || 'edit', config);
   }
 
-  namespace(name: string, block: Function): void {
-    const router = new Router(this.application, name);
+  namespace(name: string, block: Function, config?: RouteConfigI): void {
+    const router = new Router(this.application, name, config);
     block(router);
     this.nsRouters.push(router);
   }
@@ -107,7 +109,7 @@ export class Router implements RouterI {
         endpoint,
         controllerInstance,
         action,
-        config
+        Object.assign({}, this.config, config)
       )
     );
   }
