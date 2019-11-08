@@ -42,8 +42,8 @@ export class MongooseModelAdapter implements ModelI {
     });
   }
 
-  findAll<T>(): Promise<RecordCollectionI<T>> {
-    return this.find<T>({});
+  findAll<T>(config?: ModelFindConfig): Promise<RecordCollectionI<T>> {
+    return this.find<T>({}, config);
   }
 
   create<T>(data: object): RecordI<T> {
