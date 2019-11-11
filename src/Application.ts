@@ -15,7 +15,7 @@ import {
 export interface ApplicationI {
   boot(): void;
   registerRouter(router: Class<Router>, routes: Function): void;
-  registerDatabase(configResolver: Function): void;
+  registerDatabase(config: DatabaseConfigI): void;
   registerSession(configResolver: Function): void;
   model(name: string): void;
 }
@@ -75,11 +75,8 @@ export class Application implements ApplicationI {
     routes(this.router);
   }
 
-  registerDatabase(configResolver: Function): void {
-    const config: DatabaseConfigI = configResolver();
-
-    this.database = new config.adapter(config.client, config.connectionString);
-    config.models(this.database);
+  registerDatabase(config: DatabaseConfigI): void {
+    this.database = new config.adapter(config);
   }
 
   registerSession(configResolver: Function): void {

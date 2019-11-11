@@ -57,9 +57,6 @@ export class Authenticator {
   authenticate(options: AuthenticateOptionsI | string): AuthMiddleware {
     let name, config;
     if (typeof options === 'string') {
-      deprecationMessage(
-        '`authenticate` route option of type string is deprecated, please use an object with key `name` instead'
-      );
       name = options;
       config = {};
     } else {

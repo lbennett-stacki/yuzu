@@ -1,4 +1,4 @@
-import { ModelI } from '../model/Model';
+import { ModelI, ModelConfigI } from '../model/Model';
 import { Class } from '../types/Class';
 
 export interface DatabaseI {
@@ -11,10 +11,10 @@ export interface DatabaseI {
 }
 
 export interface DatabaseConfigI {
-  client: object;
+  client: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   adapter: Class<DatabaseI>;
   connectionString: string;
-  models: Function;
+  models: string[];
 }
 
 export abstract class Database implements DatabaseI {
@@ -28,7 +28,7 @@ export abstract class Database implements DatabaseI {
     return this.models.get(name);
   }
 
-  abstract registerModel(model: object, name: string): void;
+  abstract registerModel(model: ModelConfigI<any>): void;
 
   registerModelAdapter(model: ModelI, name: string): void {
     this.models.set(name, model);

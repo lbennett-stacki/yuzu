@@ -6,6 +6,7 @@ export * from './Route';
 export * from './Router';
 
 export * from './database/Database';
+export * from './database/Seeder';
 export * from './database/adapters/MongooseDatabaseAdapter';
 export * from './model/Model';
 export * from './model/adapters/MongooseModelAdapter';

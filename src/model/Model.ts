@@ -10,6 +10,25 @@ export interface ModelUpsertConfig {
   where: object;
 }
 
+export interface ModelHooksConfigI {
+  pre?: {
+    save: Function;
+  };
+}
+
+export interface ModelOptionsConfigI {
+  timestamps?: boolean;
+  paginate?: boolean;
+}
+
+export interface ModelConfigI<T> {
+  model: T;
+  name: string;
+  hooks?: ModelHooksConfigI;
+  methods?: object;
+  options?: ModelOptionsConfigI;
+}
+
 export interface ModelI {
   create<T>(data: object): RecordI<T>;
   createAll<T>(datas: object[]): RecordCollectionI<T>;
