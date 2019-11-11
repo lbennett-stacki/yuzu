@@ -4,7 +4,6 @@ import { Middleware, Context } from 'koa';
 import koaCompose from 'koa-compose';
 import { Class } from './types/Class';
 import { Application } from './Application';
-import { deprecationMessage } from './Deprecation';
 
 export type AuthMiddleware = Middleware;
 export type VerifyFunction = (
