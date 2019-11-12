@@ -1,4 +1,5 @@
 import { Mongoose, Schema, SchemaDefinition, HookNextFunction } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 import { ModelConfigI } from '../../model/Model';
 import { MongooseModelAdapter } from '../../model/adapters/MongooseModelAdapter';
 
@@ -42,6 +43,10 @@ export class MongooseModelRegistrar {
           };
         }
       );
+    }
+
+    if (modelConfig.options && modelConfig.options.paginate) {
+      model.plugin(mongoosePaginate);
     }
 
     this.client.model(modelConfig.name, model);

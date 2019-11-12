@@ -3,7 +3,7 @@ import koaBodyParser from 'koa-bodyparser';
 import koaCORS from '@koa/cors';
 import koaCompose from 'koa-compose';
 
-export type Context = KoaContext;
+export { KoaContext as Context };
 
 export interface ServerI {
   server: Koa;

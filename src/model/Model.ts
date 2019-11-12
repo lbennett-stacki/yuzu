@@ -21,6 +21,17 @@ export interface ModelOptionsConfigI {
   paginate?: boolean;
 }
 
+export interface ModelPaginateConfigI {
+  page?: number;
+  limit?: number;
+  sort?: object;
+}
+
+export interface ModelPaginateResultI<T> {
+  records: RecordCollectionI<T>;
+  totalPages: number;
+}
+
 export interface ModelConfigI<T> {
   model: T;
   name: string;
@@ -43,4 +54,8 @@ export interface ModelI {
   deleteOne<T>(where: object): Promise<RecordI<T>>;
   delete<T>(where: object): Promise<RecordCollectionI<T>>;
   deleteAll<T>(): Promise<RecordCollectionI<T>>;
+  paginate<T>(
+    where: object,
+    options: ModelPaginateConfigI
+  ): Promise<ModelPaginateResultI<T>>;
 }

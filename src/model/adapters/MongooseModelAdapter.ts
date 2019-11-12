@@ -1,13 +1,23 @@
-import { Model, Document } from 'mongoose';
-import { ModelI, ModelFindConfig, ModelUpsertConfig } from '../Model';
+import { Model as MongooseModel, Document, PaginateResult } from 'mongoose';
+import {
+  ModelI,
+  ModelFindConfig,
+  ModelUpsertConfig,
+  ModelPaginateConfigI,
+  ModelPaginateResultI,
+} from '../Model';
 import { RecordI, RecordCollectionI } from '../record/Record';
 import { MongooseRecordAdapter } from '../record/adapters/MongooseRecordAdapter';
 import { MongooseRecordCollectionAdapter } from '../record/adapters/MongooseRecordCollectionAdapter';
 
-export class MongooseModelAdapter implements ModelI {
-  private model: Model<Document>;
+interface Model extends MongooseModel<Document> {
+  paginate: Function;
+}
 
-  constructor(model: Model<Document>) {
+export class MongooseModelAdapter implements ModelI {
+  private model: Model;
+
+  constructor(model: Model) {
     this.model = model;
   }
 
@@ -28,7 +38,7 @@ export class MongooseModelAdapter implements ModelI {
           MongooseModelAdapter.record<T>(result)
         );
 
-        return resolve(new MongooseRecordCollectionAdapter<T>(records));
+        return resolve(MongooseModelAdapter.recordCollection(records));
       });
     });
   }
@@ -51,7 +61,7 @@ export class MongooseModelAdapter implements ModelI {
   }
 
   createAll<T>(datas: object[]): RecordCollectionI<T> {
-    return new MongooseRecordCollectionAdapter<T>(
+    return MongooseModelAdapter.recordCollection(
       datas.map(data => this.create(data))
     );
   }
@@ -86,7 +96,7 @@ export class MongooseModelAdapter implements ModelI {
       )
     );
 
-    return new MongooseRecordCollectionAdapter(records);
+    return MongooseModelAdapter.recordCollection(records);
   }
 
   deleteOne<T>(where: object): Promise<RecordI<T>> {
@@ -113,9 +123,31 @@ export class MongooseModelAdapter implements ModelI {
     return this.delete({});
   }
 
+  paginate<T>(
+    where: object,
+    options: ModelPaginateConfigI
+  ): Promise<ModelPaginateResultI<T>> {
+    return this.model
+      .paginate(where, options)
+      .then((result: PaginateResult<Document>) => ({
+        totalPages: result.totalPages,
+        records: MongooseModelAdapter.recordCollection(
+          result.docs.map((doc: Document) => MongooseModelAdapter.record(doc))
+        ),
+      }));
+  }
+
   static record<T>(record: Document): RecordI<T> | undefined {
     if (!record) return;
 
     return MongooseRecordAdapter.create<T>(record);
+  }
+
+  static recordCollection<T>(
+    records: RecordI<T>[]
+  ): RecordCollectionI<T> | undefined {
+    if (!records) return;
+
+    return new MongooseRecordCollectionAdapter<T>(records);
   }
 }
