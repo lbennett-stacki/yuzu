@@ -15,7 +15,6 @@ export abstract class Seeder {
     this.init();
     await this.seed();
     console.info(`${this.constructor.name} seeding complete`);
-    process.exit();
   }
 
   abstract seed(): Promise<void>;
