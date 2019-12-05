@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 export type TypeName<T> = T extends string
   ? typeof String
@@ -8,7 +8,7 @@ export type TypeName<T> = T extends string
   ? typeof Date
   : T extends number
   ? typeof Number
-  : Schema | typeof Schema.Types.ObjectId;
+  : Schema | typeof Types.ObjectId;
 
 export interface SchemaConfig<T> {
   type: T;
