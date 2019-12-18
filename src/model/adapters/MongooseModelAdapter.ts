@@ -5,6 +5,7 @@ import {
   ModelUpsertConfig,
   ModelPaginateConfigI,
   ModelPaginateResultI,
+  ModelPopulateOptionsI,
 } from '../Model';
 import { RecordI, RecordCollectionI } from '../record/Record';
 import { MongooseRecordAdapter } from '../record/adapters/MongooseRecordAdapter';
@@ -28,6 +29,7 @@ export class MongooseModelAdapter implements ModelI {
     return new Promise((resolve, reject): void => {
       const query = this.model.find(where);
 
+      if (config.load) query.populate(config.load);
       if (config.sort) query.sort(config.sort);
       if (config.limit) query.limit(config.limit);
 
@@ -43,9 +45,12 @@ export class MongooseModelAdapter implements ModelI {
     });
   }
 
-  findOne<T>(where: object): Promise<RecordI<T> | undefined> {
+  findOne<T>(
+    where: object,
+    config: ModelFindConfig = {}
+  ): Promise<RecordI<T> | undefined> {
     return new Promise((resolve, reject): void => {
-      this.model.findOne(where, (error, result) => {
+      this.model.findOne(where, {}, config, (error, result) => {
         if (error) return reject(error);
         resolve(MongooseModelAdapter.record(result));
       });
@@ -97,6 +102,15 @@ export class MongooseModelAdapter implements ModelI {
     );
 
     return MongooseModelAdapter.recordCollection(records);
+  }
+
+  updateMany<T>(where: object, data: object): Promise<RecordCollectionI<T>> {
+    return new Promise((resolve: Function, reject: Function): void => {
+      this.model.updateMany(where, data, (error: Error, record: Document) => {
+        if (error) return reject(error);
+        if (record) return resolve(MongooseModelAdapter.record<T>(record));
+      });
+    });
   }
 
   deleteOne<T>(where: object): Promise<RecordI<T>> {

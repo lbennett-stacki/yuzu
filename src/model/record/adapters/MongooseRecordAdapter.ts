@@ -1,5 +1,6 @@
 import { Document } from 'mongoose';
 import { RecordI, Record } from '../Record';
+import { ModelPopulateOptionsI } from '../../Model';
 
 interface DocumentIndexed extends Document {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,7 +27,9 @@ export class MongooseRecordAdapter<T> extends Record<T> {
     return this.record.toObject();
   }
 
-  load(relation: string): Promise<MongooseRecordAdapter<T>> {
+  load(
+    relation: ModelPopulateOptionsI | ModelPopulateOptionsI[]
+  ): Promise<MongooseRecordAdapter<T>> {
     return this.record
       .populate(relation)
       .execPopulate()

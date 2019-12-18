@@ -45,6 +45,16 @@ export class MongooseModelRegistrar {
       );
     }
 
+    if (modelConfig.virtuals) {
+      Object.entries(modelConfig.virtuals).forEach(
+        ([name, virtual]: [string, Function]) => {
+          model.virtual(name).get(function(): void {
+            virtual(this);
+          });
+        }
+      );
+    }
+
     if (modelConfig.options && modelConfig.options.paginate) {
       model.plugin(mongoosePaginate);
     }

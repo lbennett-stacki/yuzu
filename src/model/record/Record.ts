@@ -3,7 +3,7 @@ export interface RecordI<T> {
   [index: string]: any; // TODO: improve. index should be limited to keyof T
   save(): Promise<RecordI<T>>;
   toObject(): T;
-  load(relation: string): Promise<RecordI<T>>;
+  load(relation: any): Promise<RecordI<T>>; // TODO specify string | ModelPopulateOptions style config
 }
 
 export abstract class Record<T> implements RecordI<T> {
@@ -17,7 +17,7 @@ export abstract class Record<T> implements RecordI<T> {
 
   abstract save(): Promise<RecordI<T>>;
   abstract toObject(): T;
-  abstract load(relation: string): Promise<RecordI<T>>;
+  abstract load(relation: any): Promise<RecordI<T>>;
 
   static proxyHandler<T>(): object {
     return {

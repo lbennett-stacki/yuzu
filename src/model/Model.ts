@@ -1,8 +1,12 @@
+import { ModelPopulateOptions as MongooseModelPopulateOptions } from 'mongoose';
 import { RecordI, RecordCollectionI } from './record/Record';
+
+export interface ModelPopulateOptionsI extends MongooseModelPopulateOptions {} // eslint-disable-line @typescript-eslint/no-empty-interface
 
 export interface ModelFindConfig {
   sort?: object;
   limit?: number;
+  load?: ModelPopulateOptionsI | ModelPopulateOptionsI[];
 }
 
 export interface ModelUpsertConfig {
@@ -12,8 +16,16 @@ export interface ModelUpsertConfig {
 
 export interface ModelHooksConfigI {
   pre?: {
-    save: Function;
+    save?: Function;
   };
+}
+
+export interface ModelVirtualsConfigI {
+  [index: string]: Function;
+}
+
+export interface ModelMethodsConfigI {
+  [index: string]: Function;
 }
 
 export interface ModelOptionsConfigI {
@@ -36,7 +48,8 @@ export interface ModelConfigI<T> {
   model: T;
   name: string;
   hooks?: ModelHooksConfigI;
-  methods?: object;
+  virtuals?: ModelVirtualsConfigI;
+  methods?: ModelMethodsConfigI;
   options?: ModelOptionsConfigI;
 }
 
@@ -45,6 +58,7 @@ export interface ModelI {
   createAll<T>(datas: object[]): RecordCollectionI<T>;
   upsert<T>(where: object, data: object): Promise<RecordI<T>>;
   upsertAll<T>(upserts: ModelUpsertConfig[]): Promise<RecordCollectionI<T>>;
+  updateMany<T>(where: object, data: object): Promise<RecordCollectionI<T>>;
   find<T>(
     where: object,
     config?: ModelFindConfig
