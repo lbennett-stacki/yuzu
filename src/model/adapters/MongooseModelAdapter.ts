@@ -5,7 +5,6 @@ import {
   ModelUpsertConfig,
   ModelPaginateConfigI,
   ModelPaginateResultI,
-  ModelPopulateOptionsI,
 } from '../Model';
 import { RecordI, RecordCollectionI } from '../record/Record';
 import { MongooseRecordAdapter } from '../record/adapters/MongooseRecordAdapter';

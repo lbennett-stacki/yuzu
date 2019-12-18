@@ -1,9 +1,13 @@
+import { ModelPopulateOptionsI } from '../Model';
+
 export interface RecordI<T> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [index: string]: any; // TODO: improve. index should be limited to keyof T
   save(): Promise<RecordI<T>>;
   toObject(): T;
-  load(relation: any): Promise<RecordI<T>>; // TODO specify string | ModelPopulateOptions style config
+  load(
+    relation: ModelPopulateOptionsI | ModelPopulateOptionsI[]
+  ): Promise<RecordI<T>>; // TODO specify string | ModelPopulateOptions style config
 }
 
 export abstract class Record<T> implements RecordI<T> {
@@ -17,7 +21,9 @@ export abstract class Record<T> implements RecordI<T> {
 
   abstract save(): Promise<RecordI<T>>;
   abstract toObject(): T;
-  abstract load(relation: any): Promise<RecordI<T>>;
+  abstract load(
+    relation: ModelPopulateOptionsI | ModelPopulateOptionsI[]
+  ): Promise<RecordI<T>>;
 
   static proxyHandler<T>(): object {
     return {
