@@ -15,7 +15,7 @@ interface Model extends MongooseModel<Document> {
 }
 
 export class MongooseModelAdapter implements ModelI {
-  private model: Model;
+  public model: Model;
 
   constructor(model: Model) {
     this.model = model;

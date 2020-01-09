@@ -11,7 +11,7 @@ export class MongooseRecordAdapter<T> extends Record<T> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [index: string]: any;
 
-  private record: DocumentIndexed;
+  record: DocumentIndexed;
 
   constructor(record: Document) {
     super(record);
