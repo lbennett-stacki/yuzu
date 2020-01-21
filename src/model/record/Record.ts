@@ -13,6 +13,8 @@ export interface RecordI<T> {
 export abstract class Record<T> implements RecordI<T> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [index: string]: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  record: any;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(record: any) {
